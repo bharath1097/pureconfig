@@ -248,30 +248,33 @@ string              If the value is "quoted" or 'single quoted', it's
                     Moreover, any value not inferred to be of any other
                     type is a string, such as username = admin
 
-int                 64-bit signed integer literal, such as *9500*
+int                 64-bit signed integer literal, such as 9500
 
-double              64-bit IEEE double literal, such as *5.2*
+double              64-bit IEEE double literal, such as 3.1415
 
-bool                Literals *true* and *false*
+bool                Literals true and false
 
 path                A string leading with . or containing / or \
 
                     The parser is required to translate path separators to
                     the proper system separator.
 
-quantity            An integer followed by a unit, such as *250ms,
-                    50MB, 60s, 200cm*
+quantity            An integer followed by a unit, such as 250ms,
+                    50MB, 60s, 200cm
 
                     SI units should be used, but anything is allowed. There
                     must be an API to get both the value and the unit.
 ```
 
 # API
-The API in an OOP language is simply a set of get/set methods to access properties. Other languages? Whatever is idiomatic for that language.
+Pure doesn't specify an API, just a format. Use whatever is idiomatic in a given language. 
 
-Use "dot.notation" to reference groups. This works even if indentation style grouping is used.
+The API in an OOP language is probably just a set of get/set methods to access properties, and a way
+to load and save.
 
-Java example:
+Use "dot.notation" to reference groups. This must work even if indentation style grouping is used.
+
+In Java, a Pure parser might look something like this:
 
 ```
 // Get the port
