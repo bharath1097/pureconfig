@@ -34,7 +34,7 @@ inside the log tag, you know, just before the greater-than sign" tends to fail. 
 double click XML files to edit them, after which they'll ask why IE 9 launches? Okay, that's not a problem with the format though, just
 really annoying.
 
-# Old formats were easy to edit, but sucks for complex structures
+# Old formats were easier to edit, but...
 People have few problems editing "good old" INI files, and Java-style property files are easy enough too. Problem is, they
 are not very good at deeply nested structures. For instance, you can get hierarchies by naming conventions in property files,
 but you end up with a *lot* of repeating prefixes.
@@ -42,8 +42,7 @@ but you end up with a *lot* of repeating prefixes.
 # A format made from first principles
 To please all camps, then, you need a format that:
 
-* Is readable and easy to understand for non-technical people. No mysterious
-sigils. No superfluous characters to guide parsers. Values and their names is about it.
+* Is easy to understand for everyone. No mysterious sigils. No superfluous characters to guide parsers. Values and their names is about it.
 * Support comments, to help realize the first point.
 * Allows for flat config files
 * Allows for hierarchies of properties
@@ -79,7 +78,7 @@ port = 8443
 bind = 0.0.0.0
 ```
 
-Yes, it's as simple as *property = value*
+It's as simple as *property = value*
 
 Let's collect those related properties into a group called *server*
 
@@ -88,7 +87,7 @@ server.port = 8443
 server.bind = 0.0.0.0
 ```
 
-If we get a lot of these, we have to repeat the *server* prefix a lot. Pure supports
+If we get a lot of these, we have to repeat the *server* prefix. Bad. Pure supports
 nested grouping, which should be your default choice:
 
 ```
@@ -97,7 +96,7 @@ server
     bind = 0.0.0.0
 ```
 
-You can combine nesting and dot notation for groups. This is more useful than
+**However**. You can combine nesting and dot notation for groups. This is more useful than
 you might think. For instance, you may want to place all log levels at the end of
 the file, instead of spreading them all over the place:
 
@@ -114,7 +113,7 @@ database
     password = something
     timeout = 30s
 
-    # Look ma', any nesting level works
+    # Another nesting level (there's no limit)
     data
         path = ../data
         indexed = true
@@ -125,7 +124,7 @@ database.log.level = info
 ```
 
 A side note: ```user = sys``` and ```user = "sys"``` is the same thing, quotes
-are optional.
+are optional. Joe Plumber hate quotes.
 
 # Graph structure
 You can *reference* any property, at any level, in the config file.
@@ -154,19 +153,19 @@ database
         filename = db.log
 ```
 
-(Indeed, this means you can serialize object graphs *with cycles* to a highly
-readable format.)
+Indeed, this means you can serialize object graphs *with cycles* to a highly
+readable format.
 
 # Format definitions
-Optionally, a Pure parser may support format definitions, a separate file
+Optionally, a Pure parser may support format definitions. This is a separate file
 defining the structure of a config file.
 
 You pass this to the parser along with the config file. If the config file doesn't adhere
-to the format, parsing will fail.
+to the format definitions, parsing will fail.
 
-Property definitions with default values are optional, all others are required.
+Property definitions with default values are optional; all others are required.
 
-Any attempts to add properties not defined in the *def* file will cause
+Any attempt to add properties not defined in the *def* file will cause
 parsing to fail (catching spelling mistakes). However, a group can contain
 undefined properties if the group is marked *allow-undefined* (currently
 the only annotation)
@@ -206,8 +205,9 @@ server
 
 # Data types
 
-The parser must designate a data type to every property, whether a
-definition file exists or not.
+The parser *should* designate a data type to every property, whether a
+definition file exists or not. This makes sense only for statically typed
+languages, of course.
 
 *To allow for minimal API's, every typed value must have a string representation,
 which is simply its literal string, as it appears in the file.*
@@ -248,9 +248,9 @@ quantity            An integer followed by a unit, such as *250ms,
 ```
 
 # API
-The API is simply a set of get/set methods to access properties.
+The API in an OOP language is simply a set of get/set methods to access properties. Other languages? Whatever is idiomatic for that language.
 
-Use dot notation to denote groups, which works even if indentation style grouping is used.
+Use "dot.notation" to reference groups. This works even if indentation style grouping is used.
 
 Java example:
 
@@ -277,12 +277,10 @@ Pair logSize = config.getQuanity("log.size");
 config.put("server.port", 8443);
 ```
 
-Other languages? Whatever is idiomatic for that language.
-
 # What's next
 
 * A formal specification, although the informal description above should be
 enough to write a parser.
-* Yes, actual parsers must be written. Pull requests accepted for any language.
+* Yes, actual parsers must be written. Pull requests accepted for any language!
 A non-validating one should doable as a weekend project for your favorite language.
 * Consider supporting inline type definitions, such as *username: string = admin* 
