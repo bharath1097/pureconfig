@@ -156,6 +156,25 @@ database
 Indeed, this means you can serialize object graphs *with cycles* to a highly
 readable format.
 
+You can also reference a specific value.
+
+```
+vars.filename = thefile.txt
+
+# Later on, we need to reference vars.filename
+server.data => vars.filename
+```
+
+Yup, ```config.get("server.data")``` will return "thefile.txt"
+
+# Accessing environment variables
+The parser *must* replace environment variables. It's easy to implement, and very useful.
+
+```
+# The $VARNAME syntax is used on all platforms.
+app.logfile = $HOME/.logs/myapp.log
+```
+
 # Format definitions
 Optionally, a Pure parser may support format definitions. This is a separate file
 defining the structure of a config file.
